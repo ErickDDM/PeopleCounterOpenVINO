@@ -89,16 +89,16 @@ class Network:
         
         return self.network.inputs[self.input_blob].shape
 
-    def exec_net(self, image):
+    def exec_net(self, request_id, image):
         # Run the network with the specified image
         
-        self.exec_network.start_async(request_id=0, inputs={self.input_blob:image})
+        self.exec_network.start_async(request_id=request_id, inputs={self.input_blob:image})
         return
 
-    def wait(self):
-        # Wait until the last async request is finished
+    def wait(self, request_id):
+        # Wait until the specified request id is finished
 
-        status = self.exec_network.requests[0].wait(-1)
+        status = self.exec_network.requests[request_id].wait(-1)
         return status
 
     def get_output(self):
