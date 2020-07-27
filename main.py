@@ -105,6 +105,11 @@ def infer_on_stream(args, client):
     # Handle web cam
     if args.input == 'CAM':
         args.input = 0
+      
+    # Ensure that if we are not working with an image or with the webcam, then we are really working with a video file:
+    if (not is_image) and (args.input.split('.')[-1] not in ['avi', 'mp4']):
+        raise Exception('Unrecognized input file type, aborting application.')
+        sys.exit()
     
     # Initialise the class
     infer_network = Network()
@@ -144,8 +149,8 @@ def infer_on_stream(args, client):
         
         
         # Run NN and wait for result
-        infer_network.exec_net(proc_frame)
-        infer_network.wait()
+        infer_network.exec_net(request_id=0, image=proc_frame)
+        infer_network.wait(request_id=0)
 
         # Get results from the nn (boxes, probabilities, etc...)
         out_nn = infer_network.get_output()
